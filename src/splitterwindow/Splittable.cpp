@@ -110,7 +110,7 @@ public:
                 Top     * (end.y() < start.y()) |
                 Bottom  * (end.y() > start.y());
 
-        QPoint point = end - directionOriginPos;
+        QPoint point = end - start;
         const int deltaX = qAbs(point.x());
         const int deltaY = qAbs(point.y());
 
@@ -135,10 +135,11 @@ public:
     QStackedLayout *layout = nullptr;
     QWidget *widget = nullptr;
 
-    QPolygon leftTopMask;
+    QPolygon leftTopMask; // as a base polygon
     QPolygon leftBottomMask;
     QPolygon rightTopMask;
     QPolygon rightBottomMask;
+
     HintRegion hintRegion = HintClient;
     QPoint directionOriginPos;
     bool splitting = false;
