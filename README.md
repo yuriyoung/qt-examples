@@ -2,7 +2,7 @@
 Qt 5.x QWidget examples
 
 # ScreenShots
-  ## Spliter Window
+  ## Splitter Window
   ![screenhot](./screenshots/example-splitterwindow.gif)
  
 
