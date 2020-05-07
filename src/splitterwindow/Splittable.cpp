@@ -163,7 +163,7 @@ public:
 
     void holdUnsplit(Splittable *splitter)
     {
-
+        // TODO: show this widget if splitter can be unsplited.
     }
 
     Splittable *q_ptr;
