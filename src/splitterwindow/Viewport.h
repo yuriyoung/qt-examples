@@ -28,6 +28,9 @@ public:
     void addWidget(QWidget *widget);
     QWidget *widget() const;
 
+    void setCurrentWidget(int index);
+    void setCurrentWidget(QWidget *widget);
+
     Viewport *duplicate();
 
 signals:

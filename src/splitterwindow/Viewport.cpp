@@ -84,6 +84,18 @@ QWidget *Viewport::widget() const
     return m_container->currentWidget();
 }
 
+void Viewport::setCurrentWidget(int index)
+{
+    Q_ASSERT(index >= 0 && index < m_container->count());
+    m_container->setCurrentIndex(index);
+}
+
+void Viewport::setCurrentWidget(QWidget *widget)
+{
+    Q_ASSERT(widget != nullptr);
+    m_container->setCurrentWidget(widget);
+}
+
 Viewport *Viewport::duplicate()
 {
     // TODO: IMPL
