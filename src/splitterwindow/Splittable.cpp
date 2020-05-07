@@ -18,23 +18,55 @@
 
 /*
  * Overlay arrow:
- *
- *            | \
- *            |  \
- * +----------+   \
- * |              /
- * +----------+  /
- *            | /
- *            |/
+ * (0,0)
+ * +--------------------+
+ * |                    |
+ * |        | \         |
+ * |        |  \        |
+ * |--------+   \       |
+ * |            /       | 1/4, 1/5
+ * |--------+  /        |
+ * |        | /         |
+ * |        |/          |
+ * |                    |
+ * +--------------------+ (width, height)
  */
 class Overlay : public QWidget
 {
 public:
-    void paintEvent(QPaintEvent *event) override
+    Overlay(Splittable *parent) : QWidget(parent)
     {
-        // TODO: paint a arrow
-
+        this->resize(parent->width(), parent->height());
+        this->raise();
+        setStyleSheet("background-color: rgba(0, 0, 0, 127)");
     }
+
+    void paintEvent(QPaintEvent */*event*/) override
+    {
+        QPainter painter(this);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(QColor("#999999"));
+
+        int offsetX = width() / 4;
+        int offsetY = height() / 5;
+        QPolygon basePoly;
+        basePoly << QPoint(3 * offsetX, height() / 2)
+
+                 << QPoint(2 * offsetX, 4 * offsetY)
+                 << QPoint(2 * offsetX, 3 * offsetY)
+                 << QPoint(0, 3 * offsetY)
+
+                 << QPoint(0, 2 * offsetY)
+                 << QPoint(2 * offsetX, 2 * offsetY)
+                 << QPoint(2 * offsetX, offsetY);
+
+        // TODO: translate direction with QMitrix
+
+        painter.drawPolygon(basePoly);
+    }
+
+//private:
+//    int direction = 0;
 };
 
 /*
@@ -129,11 +161,17 @@ public:
         return 0;
     }
 
+    void holdUnsplit(Splittable *splitter)
+    {
+
+    }
+
     Splittable *q_ptr;
     QSplitter *splitter = nullptr;
     QStackedWidget *container = nullptr;
     QStackedLayout *layout = nullptr;
     QWidget *widget = nullptr;
+    QWidget *overlay = nullptr;
 
     QPolygon leftTopMask; // as a base polygon
     QPolygon leftBottomMask;
@@ -144,7 +182,6 @@ public:
     QPoint directionOriginPos;
     bool splitting = false;
     bool inCorner = false;
-    bool overlay = false;
 };
 
 /**
@@ -160,16 +197,7 @@ Splittable::Splittable(QWidget *widget)
     d->layout = new QStackedLayout(this);
     d->layout->setSizeConstraint(QLayout::SetNoConstraint);
 
-    if(widget)
-    {
-        d->widget = widget;
-    }
-    else
-    {
-        Viewport *viewport = new Viewport(this);
-        d->widget = viewport;
-    }
-
+    d->widget = widget ? widget : new Viewport(this);
     d->layout->addWidget(d->widget);
 }
 
@@ -220,9 +248,13 @@ void Splittable::unsplit(bool all)
 
     QList<int> sizes = parentSplitter->sizes();
     int index = parentSplitter->indexOf(this);
-    sizes[index] += sizes[index - 1];
-    sizes.removeAt(index - 1);
-    delete parentSplitter->widget(index - 1);
+    qDebug() << Q_FUNC_INFO << index << parentSplitter->count();
+    if(index > 0 && index < parentSplitter->count())
+    {
+        sizes[index] += sizes[index - 1];
+        sizes.removeAt(index - 1);
+        delete parentSplitter->widget(index - 1);
+    }
 
 /*
     QWidget *widget = this->tabkeWidget();
@@ -313,10 +345,9 @@ void Splittable::mouseReleaseEvent(QMouseEvent *event)
         qDebug() << Q_FUNC_INFO << event->button() << d->overlay;
         if(d->overlay)
         {
-            this->unsplit();
+            delete d->overlay;
+            d->overlay = nullptr;
         }
-
-        d->overlay = false;
     }
 }
 
@@ -336,17 +367,15 @@ void Splittable::mouseMoveEvent(QMouseEvent *event)
             switch (direction)
             {
             case SplittablePrivate::MoveLeft:
-                qDebug() << "MoveLeft [Horizontal]";
-                // TODO: create a overlay widget for unsplit
-                d->overlay = true;
+                // create a overlay widget for unsplit
+                d->holdUnsplit(this);
                 break;
             case SplittablePrivate::MoveRight:
                 this->split(Qt::Horizontal, 0);
                 break;
             case SplittablePrivate::MoveUp:
-                qDebug() << "MoveUp [Vertical]";
-                // TODO: create a overlay widget for unsplit
-                d->overlay = true;
+                // create a overlay widget for unsplit
+                d->holdUnsplit(this);
                 break;
             case SplittablePrivate::MoveDown:
                 this->split(Qt::Vertical, 0);
@@ -424,7 +453,7 @@ void Splittable::hoverMove(QHoverEvent *event)
 
     if(d->leftTopMask.containsPoint(cursor, Qt::OddEvenFill))
     {
-        qDebug() << Q_FUNC_INFO << event->type() << cursor;
+//        qDebug() << Q_FUNC_INFO << event->type() << cursor;
         d->inCorner = true;
 //        this->setMask(d->leftTopMask);
         d->hintRegion = SplittablePrivate::HintLeftTop;
@@ -461,6 +490,6 @@ void Splittable::hoverMove(QHoverEvent *event)
 
 void Splittable::hoverLeave(QHoverEvent *event)
 {
-    qDebug() << Q_FUNC_INFO << event->type();
+//    qDebug() << Q_FUNC_INFO << event->type();
 //    this->clearMask();
 }
