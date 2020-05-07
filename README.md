@@ -6,4 +6,4 @@ Qt 5.x QWidget examples
   ![screenhot](./screenshots/example-splitterwindow.gif)
  
 
- - [ ] TODO: blabla...
+  - [ ] TODO: show a overlay when unsplit
