@@ -23,7 +23,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     // just test
     auto combobox1 = new QComboBox(this);
     combobox1->addItem("Align Top");
-    combobox1->addItem("Align Bootom");
+    combobox1->addItem("Align Bottom");
     m_titleLabel = new QLabel("Title Bar", this);
     layout->addWidget(combobox1);
     layout->addWidget(m_titleLabel);
