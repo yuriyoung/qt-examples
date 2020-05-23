@@ -12,6 +12,7 @@ class Splittable : public QWidget
     Q_DECLARE_PRIVATE_D(d, Splittable)
 public:
     explicit Splittable(QWidget *widget = nullptr);
+    ~Splittable() override;
 
     void split(Qt::Orientation orientation);
     void split(Qt::Orientation orientation, int index);

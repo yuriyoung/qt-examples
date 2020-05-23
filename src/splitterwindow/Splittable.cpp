@@ -201,6 +201,11 @@ Splittable::Splittable(QWidget *widget)
     d->layout->addWidget(d->widget);
 }
 
+Splittable::~Splittable()
+{
+
+}
+
 void Splittable::split(Qt::Orientation orientation)
 {
     Q_UNUSED(orientation)

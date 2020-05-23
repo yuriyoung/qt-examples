@@ -11,6 +11,7 @@ class Splitter : public QSplitter
 public:
     explicit Splitter(QWidget *parent = nullptr);
     explicit Splitter(Qt::Orientation orientation, QWidget *parent = nullptr);
+    ~Splitter();
 
     inline int pickHandle(const QPoint &pos) const
     { return this->orientation() == Qt::Horizontal ? pos.x() : pos.y(); }
