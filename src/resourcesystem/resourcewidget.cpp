@@ -76,7 +76,7 @@ inline static QUrl get_directory(const QUrl &url)
     return url;
 }
 
-static QString nameFilterForMime(const QString &mimeType)
+static QString name_filter_for_mime(const QString &mimeType)
 {
     QMimeDatabase db;
     QMimeType mime(db.mimeTypeForName(mimeType));
@@ -1480,7 +1480,7 @@ void ResourceWidget::setMimeTypeFilters(const QStringList &filters)
     QStringList nameFilters;
     for (const QString &mimeType : filters)
     {
-        const QString text = nameFilterForMime(mimeType);
+        const QString text = name_filter_for_mime(mimeType);
         if (!text.isEmpty())
             nameFilters.append(text);
     }
@@ -1497,7 +1497,7 @@ void ResourceWidget::selectMimeTypeFilter(const QString &filter)
 {
     d->options->setInitiallySelectedMimeTypeFilter(filter);
 
-    const QString filterForMime = nameFilterForMime(filter);
+    const QString filterForMime = name_filter_for_mime(filter);
     if (!filterForMime.isEmpty())
     {
         selectNameFilter(filterForMime);
