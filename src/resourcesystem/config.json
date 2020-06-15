@@ -1,0 +1,119 @@
+{
+	"categories" : [
+		{
+			"id": 0,
+			"name": "Images",
+			"description": "",
+			"types": "*.png;*jpeg;*.jpg;*.bmp",
+			"mime": "image/*",
+			"children": [
+				{
+					"name": "System",
+					"description": "",
+					"path" : "",
+					"permission": 0,
+					"children": []
+				},
+				{
+					"name": "User",
+					"description": "",
+					"path" : "",
+					"permission": 1,
+					"children": []
+				},
+			]
+		},
+		{
+			"id": 1,
+			"name": "Actors",
+			"description": "",
+			"types": "*.actor",
+			"mime": "text/xml;application/xml",
+			"children": [
+				{
+					"name": "System",
+					"description": "",
+					"path" : "",
+					"permission": 0,
+					"children": []
+				},
+				{
+					"name": "User",
+					"description": "",
+					"path" : "",
+					"permission": 1,
+					"children": []
+				},
+			]
+		},
+		{
+			"id": 2,
+			"name": "Items",
+			"description": "",
+			"types": "",
+			"mime": "text/xml;application/xml",
+			"children": [
+				{
+					"name": "System",
+					"description": "",
+					"path" : "",
+					"permission": 0,
+					"children": []
+				},
+				{
+					"name": "User",
+					"description": "",
+					"path" : "",
+					"permission": 1,
+					"children": []
+				},
+			]
+		},
+		{
+			"id": 3,
+			"name": "Audios",
+			"description": "",
+			"types": "*.mp3",
+			"mime": "audio/mp3;audio/mpeg;audio/*",
+			"children": [
+				{
+					"name": "System",
+					"description": "",
+					"path" : "",
+					"permission": 0,
+					"children": []
+				},
+				{
+					"name": "User",
+					"description": "",
+					"path" : "",
+					"permission": 1,
+					"children": []
+				},
+			]
+		},
+		{
+			"id": 4,
+			"name": "Effects",
+			"description": "",
+			"types": "*.effect",
+			"mime": "application/octet-stream",
+			"children": [
+				{
+					"name": "System",
+					"description": "",
+					"path" : "",
+					"permission": 0,
+					"children": []
+				},
+				{
+					"name": "User",
+					"description": "",
+					"path" : "",
+					"permission": 1,
+					"children": []
+				},
+			]
+		}
+	]
+}
