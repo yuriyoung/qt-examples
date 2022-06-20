@@ -86,7 +86,7 @@ WindowFrame::WindowFrame(QWidget *target)
 
     // ensure it is a top level window
     auto flags = target->windowFlags();
-    if(flags.testFlag(Qt::Dialog) && flags.testFlag(Qt::Window))
+    if(!flags.testFlag(Qt::Dialog) && !flags.testFlag(Qt::Window))
         flags |= Qt::Window;
     target->setWindowFlags(flags | Qt::FramelessWindowHint);
 
