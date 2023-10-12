@@ -34,10 +34,11 @@ public:
     Q_ENUM(Direction);
 
     // Unused
+    // TODO: support options
     enum Option
     {
         AutoClose       = 0x0001, // Milliseconds to wait before closing toast.
-        DelayOpen       = 0x0002,   // Milliseconds to wait before opening toast.
+        DelayOpen       = 0x0002, // Milliseconds to wait before opening toast.
         CloseOnClick    = 0x0004, // Closes toast when mouse left button click on it.
         OpenOnFocus     = 0x0008, // Activate the task when the task is focused.
         OpenOnHover     = 0x0010, // Activate the task when the task is hovered.
@@ -91,8 +92,8 @@ signals:
     void opacityChanged();
 
 public slots:
-    virtual void FadeIn();
-    virtual void FadeOut();
+    virtual void fadeIn();
+    virtual void fadeOut();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

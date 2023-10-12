@@ -71,18 +71,18 @@ public:
     QToastWidgetPrivate();
     ~QToastWidgetPrivate();
 
-    void Setup(QWidget *parent);
-    bool IsTop() const;
-    bool IsBottom() const;
-    int CurrentIndex() const;
-    QRect GetParentGeometry() const;
-    void SlideAllAnimations();
-    void SlideAnimation();
-    QRect AlignedDirection(const QSize& size, const QRect &rect, int margin = 0);
+    void setupUi(QWidget *parent);
+    bool isTop() const;
+    bool isBottom() const;
+    int currentIndex() const;
+    QRect parentGeometry() const;
+    void slideAllAnimations();
+    void slideOneAnimation();
+    QRect alignedDirection(const QSize& size, const QRect &rect, int margin = 0);
 
-    void OnShow();
-    void OnClose();
-    void Repaint();
+    void onShow();
+    void onClose();
+    void repaint();
 
     QToastWidget *q;
     QPropertyAnimation slideAnimation;
@@ -121,7 +121,7 @@ QToastWidgetPrivate::~QToastWidgetPrivate()
     delete progressTimer;
 }
 
-void QToastWidgetPrivate::Setup(QWidget *parent)
+void QToastWidgetPrivate::setupUi(QWidget *parent)
 {    
     iconLabel = new QLabel(parent);
     iconLabel->setScaledContents(true);
@@ -135,22 +135,22 @@ void QToastWidgetPrivate::Setup(QWidget *parent)
     layout->addWidget(textLabel);
 }
 
-bool QToastWidgetPrivate::IsTop() const
+bool QToastWidgetPrivate::isTop() const
 {
     return (int)direction < int(QToastWidget::Center);
 }
 
-bool QToastWidgetPrivate::IsBottom() const
+bool QToastWidgetPrivate::isBottom() const
 {
     return (int)direction >= int(QToastWidget::Center);
 }
 
-int QToastWidgetPrivate::CurrentIndex() const
+int QToastWidgetPrivate::currentIndex() const
 {
     return gToastList->indexOf(q);
 }
 
-QRect QToastWidgetPrivate::GetParentGeometry() const
+QRect QToastWidgetPrivate::parentGeometry() const
 {
     bool isDesktop = (q->parentWidget() == nullptr);
     QRect geometry;
@@ -169,26 +169,26 @@ QRect QToastWidgetPrivate::GetParentGeometry() const
     return geometry;
 }
 
-void QToastWidgetPrivate::SlideAllAnimations()
+void QToastWidgetPrivate::slideAllAnimations()
 {
     for (int i = 0; i < gToastList->size(); ++i)
     {
         auto toast = gToastList->at(i);
-        toast->d->SlideAnimation();
+        toast->d->slideOneAnimation();
     }
 }
 
-void QToastWidgetPrivate::SlideAnimation()
+void QToastWidgetPrivate::slideOneAnimation()
 {
     if(slideAnimation.state() == QAbstractAnimation::Running)
         return;
 
-    const int i = CurrentIndex();
+    const int i = currentIndex();
     const int y = i * (q->height() + Spacing);
 
-    QRect geometry = GetParentGeometry();
-    QRect rc = AlignedDirection(q->size(), geometry, Spacing);
-    rc.translate(0, IsTop() ? y : -y);
+    QRect geometry = parentGeometry();
+    QRect rc = alignedDirection(q->size(), geometry, Spacing);
+    rc.translate(0, isTop() ? y : -y);
 
     QPoint from = q->pos();
     QPoint to = rc.topLeft();
@@ -204,32 +204,32 @@ void QToastWidgetPrivate::SlideAnimation()
     slideAnimation.start(QAbstractAnimation::KeepWhenStopped);
 }
 
-QRect QToastWidgetPrivate::AlignedDirection(const QSize &size, const QRect &rect, int margin)
+QRect QToastWidgetPrivate::alignedDirection(const QSize &size, const QRect &rect, int margin)
 {
     Qt::Alignment align = DirectionToAlignment(direction);
     auto r = rect.marginsRemoved(QMargins(margin, margin, margin, margin));
     return QStyle::alignedRect(QApplication::layoutDirection(), align, size, r);
 }
 
-void QToastWidgetPrivate::OnShow()
+void QToastWidgetPrivate::onShow()
 {
     q->adjustSize();
-    QRect rect =  AlignedDirection(q->size(), GetParentGeometry());
+    QRect rect =  alignedDirection(q->size(), parentGeometry());
     q->setGeometry(rect);
 
     gToastList->prepend(q);
-    SlideAllAnimations();
+    slideAllAnimations();
     progressTimer->start(duration);
 }
 
-void QToastWidgetPrivate::OnClose()
+void QToastWidgetPrivate::onClose()
 {
     gToastList->removeOne(q);
     progressTimer->stop();
-    SlideAllAnimations();
+    slideAllAnimations();
 }
 
-void QToastWidgetPrivate::Repaint()
+void QToastWidgetPrivate::repaint()
 {
     q->repaint();
     QCoreApplication::processEvents();
@@ -250,9 +250,9 @@ QToastWidget::QToastWidget(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     d->q = this;
-    d->Setup(this);
+    d->setupUi(this);
 
-    connect(d->progressTimer, &QTimer::timeout, this, &QToastWidget::FadeOut);
+    connect(d->progressTimer, &QTimer::timeout, this, &QToastWidget::fadeOut);
 }
 
 QToastWidget::~QToastWidget()
@@ -364,24 +364,6 @@ void QToastWidget::setOpacity(qreal opacity)
 
 QSize QToastWidget::sizeHint() const
 {
-//    QSize result{maximumWidth(), 48};
-//    if (!parent())
-//        return QFrame::sizeHint();
-////        return result;
-
-//    auto cm = layout()->contentsMargins();
-//    d->iconLabel->adjustSize();
-//    d->textLabel->adjustSize();
-//    int availableWidth = maximumWidth();
-//    if(d->iconLabel->isVisible())
-//        availableWidth -= d->iconLabel->width();
-
-//    QFontMetrics fm(d->textLabel->font());
-//    QRect textRect = fm.boundingRect(QRect(0, 0, availableWidth - cm.top() - cm.bottom(), 0),
-//                                     Qt::TextDontClip | Qt::TextWordWrap, d->textLabel->text());
-//    result += QSize(0, std::max(textRect.height(), d->iconLabel->height()));
-//    return result;
-
     return QFrame::sizeHint();
 }
 
@@ -430,7 +412,7 @@ void QToastWidget::error(QWidget *parent, const QString &text, Direction directi
 // Unused
 // Warning: Widget can only one QGraphicsEffect object
 // TODO: define a QGraphicsShadowEffect class provider a shadow and a opacity property
-void QToastWidget::FadeIn()
+void QToastWidget::fadeIn()
 {
     if(parentWidget())
     {
@@ -455,7 +437,7 @@ void QToastWidget::FadeIn()
 }
 
 // Hide with animation
-void QToastWidget::FadeOut()
+void QToastWidget::fadeOut()
 {
     QPropertyAnimation *fadeOutAnimation = new QPropertyAnimation(this, "opacity");
     connect(fadeOutAnimation, &QAbstractAnimation::finished, this, &QToastWidget::close);
@@ -496,14 +478,14 @@ void QToastWidget::mousePressEvent(QMouseEvent *event)
 
 void QToastWidget::closeEvent(QCloseEvent *event)
 {
-    d->OnClose();
+    d->onClose();
     QFrame::closeEvent(event);
 }
 
 void QToastWidget::showEvent(QShowEvent *event)
 {
     QFrame::showEvent(event);
-    d->OnShow();
+    d->onShow();
 }
 
 void QToastWidget::drawContents(QPainter *painter)
@@ -518,6 +500,7 @@ void QToastWidget::drawContents(QPainter *painter)
     painter->drawRoundedRect(rect().marginsRemoved(margins), 4, 4);
     painter->restore();
 
+    // TODO: draw elements use QStyleOption and QStylePainter instead of QLayout
     /*
     QStyleOption opt;
     opt.initFrom(this);
