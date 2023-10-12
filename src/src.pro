@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     splitterwindow \
-    windowframe
+    windowframe \
+    qtoastwidget
